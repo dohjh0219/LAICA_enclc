@@ -1,0 +1,28 @@
+# ============================================================================
+# enc_lc: sensor_bridge_node parameters
+#
+# Architecture:
+#   DYLY-108 load cell ─► ADS1256 (SPI) ─┐
+#                                          ├─► Arduino Mega ─(USB)─► ROS
+#   EN25-Absolute encoder ─(TTL Serial1)──┘
+# ============================================================================
+
+sensor_bridge_node:
+  port:          /dev/ttyUSB0   # Arduino Mega USB serial port
+  baud:          115200
+  publish_rate:  100.0          # [Hz]  Arduino outputs at 100 Hz
+
+  frame_id_lc:  load_cell
+  frame_id_enc: encoder
+
+  # ── Force calibration ───────────────────────────────────────────────────
+  # Procedure:
+  #   1. With no load, record the published voltage_mv → set as zero_offset_mv
+  #   2. Hang a known weight (e.g. 10 N), record voltage_mv → V_full
+  #   3. scale_n_per_mv = known_N / (V_full - zero_offset_mv)
+  #
+  # DYLY-108 typical specs:
+  #   Sensitivity: ~2 mV/V, Excitation: 5 V → Full-scale ≈ 10 mV
+  #   At PGA=64 on the ADS1256, resolution ≈ 0.005 mV
+  zero_offset_mv: 0.0           # [mV] ADC reading at zero load
+  scale_n_per_mv: 1.0           # [N/mV]  ← fill in after calibration

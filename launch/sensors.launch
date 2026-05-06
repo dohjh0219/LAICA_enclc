@@ -1,0 +1,29 @@
+<launch>
+  <!-- ===========================================================
+       enc_lc sensors launch file
+       Usage:
+         roslaunch enc_lc sensors.launch
+         roslaunch enc_lc sensors.launch port:=/dev/ttyUSB1
+       =========================================================== -->
+
+  <arg name="port"           default="/dev/ttyUSB0" />
+  <arg name="baud"           default="115200" />
+  <arg name="publish_rate"   default="100.0" />
+  <arg name="zero_offset_mv" default="0.0" />
+  <arg name="scale_n_per_mv" default="1.0" />
+
+  <node name="sensor_bridge_node"
+        pkg="enc_lc"
+        type="sensor_bridge_node.py"
+        output="screen">
+    <rosparam command="load"
+              file="$(find enc_lc)/config/params.yaml"
+              ns="~" />
+    <!-- Allow command-line overrides -->
+    <param name="port"           value="$(arg port)" />
+    <param name="baud"           value="$(arg baud)" />
+    <param name="publish_rate"   value="$(arg publish_rate)" />
+    <param name="zero_offset_mv" value="$(arg zero_offset_mv)" />
+    <param name="scale_n_per_mv" value="$(arg scale_n_per_mv)" />
+  </node>
+</launch>
